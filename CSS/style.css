@@ -3,6 +3,10 @@
     height: 100px !important;
 }
 
+body{
+  background-image: url("/img/images_the_district/catégorie/gay.png");
+
+}
 .fondcouleurnav{
     background-color: beige;
     border-radius: 15px;
