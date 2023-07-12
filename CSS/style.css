@@ -32,16 +32,18 @@
   .text-overlay h2 {
     font-size: 24px;
     margin-bottom: 10px;
+    color: black;
   }
   
   .text-overlay p {
     font-size: 18px;
     margin-bottom: 20px;
+    color: black;
   }
   
   .search-form {
-    display: flex;
     justify-content: center;
+    width: 100px;
   }
   
   .search-form input[type="text"] {
@@ -52,9 +54,9 @@
     border-radius: 5px;
   }
   
-  .search-form input[type="text"]::placeholder {
+   .search-form input[type="text"]::placeholder {
     color: #999;
-  }
+  } 
   
   .search-form input[type="text"]:focus {
     outline: none;
@@ -111,3 +113,13 @@
     width: 200px;
     height: 200px;
   }
+
+  .video-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+
+  
