@@ -125,3 +125,33 @@
     text-align: center;
     margin-top: 450px;
   }
+
+  .cocktails {
+    text-align: center;
+    text-decoration:underline;
+  }
+
+  .salade {
+    text-align: center;
+    text-decoration:underline;
+  }
+
+  .pizza {
+    text-align: center;
+    text-decoration:underline;
+  }
+
+  .desserts {
+    text-align:center;
+    text-decoration: underline;
+  }
+
+  .burgers {
+    text-align:center;
+    text-decoration: underline;
+  }
+
+  .cafe {
+    text-align:center;
+    text-decoration: underline;
+  }
