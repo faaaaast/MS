@@ -3,6 +3,7 @@
   height: 100px !important;
 }
 
+/* Fond de la nav bar */
 .fondcouleurnav {
   background-color: beige;
   border-radius: 15px;
@@ -13,6 +14,7 @@
   height: 350px;
 }
 
+/* Logo The District  */
 .logo {
   width: 100%;
   height: 100%;
