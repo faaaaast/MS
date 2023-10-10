@@ -1,116 +1,152 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+session_start();
+$session_status = session_status();
+
+
+if (!isset($_SESSION['panier'])) {
+    $_SESSION['panier'] = array();
+}
+
+$id_plat = isset($_POST['id_plat']) ? $_POST['id_plat'] : null;
+$quantite = isset($_POST['quantite']) ? $_POST['quantite'] : null;
+
+if ($id_plat !== null && $quantite !== null) {
+    // Supprimer le plat du panier si la quantité est de 0
+    if ($quantite === '0') {
+        unset($_SESSION['panier'][$id_plat]);
+    } else {
+        // Ajouter le plat au panier
+        if (isset($_SESSION['panier'][$id_plat])) {
+            $_SESSION['panier'][$id_plat] += $quantite;
+        } else {
+            $_SESSION['panier'][$id_plat] = $quantite;
+        }
+    }
+}
+
+
+
+
+// Inclure le fichier de connexion à la base de données
+require_once 'db_connexion.php';
+
+// Fonction pour récupérer les détails d'un plat par son ID
+function getDetailsPlat($db, $id_plat) {
+    $requete_plat = $db->prepare("SELECT * FROM plat WHERE id = :id_plat");
+    $requete_plat->bindParam(':id_plat', $id_plat);
+    $requete_plat->execute();
+    return $requete_plat->fetch(PDO::FETCH_ASSOC);
+}
+?>
+
 <!DOCTYPE html>
-<html lang="fr-fr">
-
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mon Panier</title>
-  <link rel="stylesheet" href="/CSS/style.css">
-  <link rel="stylesheet" href="/FORMULAIRE/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier</title>
+    <!-- Ajouter les liens CSS Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css" />
+<style>
+    body {
+          background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/img/banniere5.jpg') center center fixed no-repeat;
+	        background-size: cover;
+        	height: 1200px;
+            color: white;
+        }
+  a {
+      color: white;
+}
+table {
+    color: white;
+}
 
+.container.mt-5 {
+    color: white;
+}
+td {
+    color: white;
+}
+th {
+    color: white;
+}
+li {
+    color: white;
+}
+</style>
 </head>
 
 <body>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-    crossorigin="anonymous"></script>
-        <!-- Début de la div de la nav bar du haut -->
-        <nav class="fondcouleurnav navbar navbar-expand-lg bg-beige justify-content-center text-center">
-    <img class="logo" src="/img/images_the_district/the_district_brand/logo.png" alt="logo" style="height: 100px; width: 100px;">
-
-    <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/index.php">Accueil</a>
-        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/categorie.php">Catégorie</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/plats.php">Plats</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/contact.php">Contact</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/commande.php">Commandes</a>
-    </div>
-    <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-        <a href="panier.php"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl zoom"> </i></a>
-    </div>
-</nav>
-        
-        <!-- Fin de la div de la nav bar du haut -->
-    
-        <!-- Début de la div de l'image sous la nav bar du haut + texte sur l'image -->
-        <div class="background-image">
-            <img class="logo" src="/img/images_the_district/bg.jpg" alt="logo">
-            <div class="text-overlay">
-                <h2>Délicieusement connecté à tous les goûts</h2>
-                <p>The District, où la saveur urbaine rencontre la rapidité du fast-food !</p>
-            </div>
-        </div>
-        <!-- Fin de la div de l'image sous la nav bar du haut + texte sur l'image -->    
-  <h1>Mon Panier</h1>
-
-  <h2>Produits sélectionnés :</h2>
-  <ul id="panier-liste"></ul>
-
-  <h2>Prix total :</h2>
-  <p id="prix-total"></p>
-  <button onclick="resetPanier()">Réinitialiser</button>
-
-  <script>
-    function resetPanier() {
-      // Supprimer les données du sessionStorage
-      sessionStorage.removeItem("panier");
-      sessionStorage.removeItem("prixTotal");
-
-      // Rediriger vers la page principale
-      window.location.href = "plats.html";
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-      // Récupérer les données du sessionStorage
-      var panier = JSON.parse(sessionStorage.getItem("panier")) || [];
-
-      // Calculer le prix total
-      var prixTotal = 0;
-      panier.forEach(function(produit) {
-        prixTotal += produit.prix;
-      });
-      
-      // Enregistrer le prix total dans le sessionStorage
-      sessionStorage.setItem("prixTotal", prixTotal);
-
-      // Afficher les produits sélectionnés
-      var panierListe = document.getElementById("panier-liste");
-      panier.forEach(function(produit) {
-        var li = document.createElement("li");
-
-
-        var div = document.createElement("div");
-
-        var h3 = document.createElement("h3");
-        h3.textContent = produit.nom;
-        div.appendChild(h3);
-
-        var pDesc = document.createElement("p");
-        pDesc.textContent = produit.description;
-        div.appendChild(pDesc);
-
-        var pPrix = document.createElement("p");
-        pPrix.textContent = "Prix : " + produit.prix + "€";
-        div.appendChild(pPrix);
-
-        li.appendChild(div);
-        panierListe.appendChild(li);
-      });
-
-      // Afficher le prix total
-      var prixTotalElement = document.getElementById("prix-total");
-      prixTotalElement.textContent = "Prix total : " + prixTotal.toFixed(2) + "€";
-    });
-  </script>
-
 <br><br>
+<div class="container mt-5">
+    <h1>Votre Panier</h1>
+
+    <?php
+    if (empty($_SESSION['panier'])) {
+        echo '<p>Votre panier est vide.</p>';
+        echo '<a href="plats.php" class="btn btn-primary">Retourner aux plats</a>';
+    } else {
+        echo '<table class="table">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>Image</th>';
+        echo '<th>Plat</th>';
+        echo '<th>Description</th>';
+        echo '<th>Prix</th>';
+        echo '<th>Quantité</th>';
+        echo '<th>Total</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+
+        $total_panier = 0;
+
+        foreach ($_SESSION['panier'] as $plat_id => $quantite) {
+            $plat = getDetailsPlat($db, $plat_id);
+
+            if ($plat) {
+                $total_plat = $quantite * $plat['prix'];
+                $total_panier += $total_plat;
+
+                echo '<tr>';
+                echo '<td><img src="' . $plat['image'] . '" alt="Image Plat" style="max-width: 100px;"></td>';
+                echo '<td>' . $plat['libelle'] . '</td>';
+                echo '<td>' . $plat['description'] . '</td>';
+                echo '<td>$' . $plat['prix'] . '</td>';
+                echo '<td>' . $quantite . '</td>';
+                echo '<td>$' . $total_plat . '</td>';
+                echo '</tr>';
+            }
+        }
+        $_SESSION['montant_total'] = $total_panier;
+
+        echo '</tbody>';
+        echo '</table>';
+
+        echo '<h3>Total du Panier : $' . $total_panier . '</h3>';
+
+        echo '<a href="plats.php" class="btn btn-primary">Retourner aux plats</a>';
+
+        // Ajouter le bouton "Réinitialiser la commande"
+        echo '<a href="reset_panier.php" class="btn btn-danger">Réinitialiser la commande</a>';
+
+        echo '<a href="formulaire_cmd.php" class="btn btn-success">Finaliser la commande</a>';
+
+
+        // Vous pouvez ajouter le formulaire pour compléter la commande ici
+    }
+   ?>
+</div>
+<!-- Ajouter les scripts Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
 
 </body>
-
 </html>

@@ -1,26 +1,64 @@
-<!DOCTYPE html>
-<html lang="fr-fr">
 
+<?php
+session_start();
+
+
+// Inclure le fichier de connexion à la base de données
+require_once 'db_connexion.php';
+
+
+
+
+// Fonction pour récupérer les plats par catégorie
+function getPlatsParCategorie($db, $categorie_id) {
+    $requete_plats = $db->prepare("SELECT * FROM plat WHERE id_categorie = :categorie_id AND active = 'Yes'");
+        $requete_plats->bindParam(':categorie_id', $categorie_id);
+    $requete_plats->execute();
+    return $requete_plats->fetchAll(PDO::FETCH_ASSOC);
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plats - The District </title>
-  <link rel="stylesheet" href="/CSS/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plats par Catégorie</title>
+    <!-- Ajouter les liens CSS Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="shortcut icon" href="/img/images_the_district/the_district_brand/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        /* Ajouter une classe CSS pour limiter la taille des images */
+        .card-img-top {
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+          background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/img/banniere5.jpg') center center fixed no-repeat;
+	        background-size: cover;
+        	height: 1200px;
+        }
+        h6{
+          color: white;
+        }
+
+        /* Fond de la nav bar */
+.fondcouleurnav {
+  background-color: beige;
+  border-radius: 15px;
+}
+    </style>
 </head>
-
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-    crossorigin="anonymous"></script>
-
-  <!-- Début de la div de la nav bar du haut -->
-  <nav class="fondcouleurnav navbar navbar-expand-lg bg-beige justify-content-center text-center">
+<header class="fixed-top">
+      <!-- Début de la div de la nav bar du haut -->
+      <nav class="fondcouleurnav navbar navbar-expand-lg bg-beige justify-content-center text-center">
     <img class="logo" src="/img/images_the_district/the_district_brand/logo.png" alt="logo" style="height: 100px; width: 100px;">
 
     <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
@@ -34,548 +72,88 @@
         <a href="panier.php"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl zoom"> </i></a>
     </div>
 </nav>
+    
+    <!-- Fin de la div de la nav bar du haut -->
+</header>
+<div class="container mt-5">
 
-  <!-- Fin de la div de la nav bar du haut -->
+    <!-- Boucle pour afficher les plats par catégorie -->
+    <?php
+    // Récupérer les catégories
+    $requete_categories = $db->prepare("SELECT * FROM categorie WHERE active = 'Yes'");
+    $requete_categories->execute();
+    $categories = $requete_categories->fetchAll(PDO::FETCH_ASSOC);
 
-  <!-- Début de la div du carroussel -->
-  <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="/img/images_the_district/bg.jpg" class="d-block w-100" alt="1">
-      </div>
-      <div class="carousel-item">
-        <img src="/img/images_the_district/bg1.jpeg" class="d-block w-100" alt="2">
-      </div>
-      <div class="carousel-item">
-        <img src="/img/images_the_district/bg3.jpeg" class="d-block w-100" alt="3">
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la div du carroussel -->
+    foreach ($categories as $categorie) {
+        echo '<div class="mt-4">';
+        echo '<h2 style="color: white;">' . $categorie['libelle'] . '</h2>';
 
-  <!-- Debut de la div vidéo -->
-  <div class="video-container">
-    <video width="100%" controls autoplay muted loop>
-      <source src="/video/plats.mp4" type="video/mp4">
-      <!-- Fournir des sources supplémentaires pour une compatibilité maximale -->
-      Votre navigateur ne prend pas en charge la lecture de vidéos.
-    </video>
-  </div>
-  <!-- Fin de la div vidéo -->
+        // Récupérer les plats par catégorie
+        $plats = getPlatsParCategorie($db, $categorie['id']);
 
-  <!-- Début de la div contenant les aliments -->
-  <!-- Début de la partie cocktails -->
-  <hr>
-  <h1 class="cocktails"> Nos Cocktails</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/cocktail-manhattan.png" class="card-img-top" alt="Manhattan">
-      <div class="card-body">
-        <h5 class="card-title">Le Manhattan </h5>
-        <p class="card-text"> Une envie de fraicheur ? Prend un apéritifs ! </p>
-        <p> 7.99€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(1)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/LeBostonRumPunch.png" class="card-img-top" alt="Boston">
-      <div class="card-body">
-        <h5 class="card-title">Le Boston Rum Punch</h5>
-        <p class="card-text"> Une envie de fraicheur ? Prend un apéritifs ! </p>
-        <p> 9.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(2)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/london.png" class="card-img-top" alt="london">
-      <div class="card-body">
-        <h5 class="card-title">Le London Fog</h5>
-        <p class="card-text"> Une envie de fraicheur ? Prend un apéritifs ! </p>
-        <p> 10.20€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(3)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/milano.png" class="card-img-top" alt="milano">
-      <div class="card-body">
-        <h5 class="card-title">Le Milano</h5>
-        <p class="card-text"> Une envie de fraicheur ? Prend un apéritifs ! </p>
-        <p> 12.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(4)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/bronx.png" class="card-img-top" alt="bronx">
-      <div class="card-body">
-        <h5 class="card-title">Le Bronx</h5>
-        <p class="card-text"> Une envie de fraicheur ? Prend un apéritifs ! </p>
-        <p> 7.99€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(5)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie cocktails -->
-
-  <!-- Début de la partie salades -->
-  <hr>
-  <h1 class="salade"> Nos Salades</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/saladecesar.png" class="card-img-top" alt="salade-cesar">
-      <div class="card-body">
-        <h5 class="card-title">Salades César</h5>
-        <p class="card-text">Quoi de mieux qu'une petite salade pour commencer un bon repas ? </p>
-        <p> 11.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(6)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/saladedepate.png" class="card-img-top" alt="salade-de-pates">
-      <div class="card-body">
-        <h5 class="card-title">Salades de pâtes</h5>
-        <p class="card-text">Quoi de mieux qu'une petite salade pour commencer un bon repas ? </p>
-        <p> 9.99€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(7)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/saladederiz.png" class="card-img-top" alt="salade-de-riz">
-      <div class="card-body">
-        <h5 class="card-title">Salades de riz</h5>
-        <p class="card-text">Quoi de mieux qu'une petite salade pour commencer un bon repas ? </p>
-        <p> 10.45€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(8)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/salademosaique.png" class="card-img-top" alt="salade Mosaique">
-      <div class="card-body">
-        <h5 class="card-title">Salades Mosaique</h5>
-        <p class="card-text">Quoi de mieux qu'une petite salade pour commencer un bon repas ? </p>
-        <p> 12.60€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(9)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/salademarocainne.png" class="card-img-top" alt="salade Marocaine">
-      <div class="card-body">
-        <h5 class="card-title">Salades Marocaine</h5>
-        <p class="card-text">Quoi de mieux qu'une petite salade pour commencer un bon repas ? </p>
-        <p> 15.30€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(10)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie salades -->
-
-  <!-- Début de la partie burgers -->
-  <hr>
-  <h1 class="burgers"> Nos Burgers</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/burger.jpg" class="card-img-top" alt="burger">
-      <div class="card-body">
-        <h5 class="card-title">Burger</h5>
-        <p class="card-text">Voici notre burger du moment ! Cheddar, bacon, oignon, tomates.</p>
-        <p> 9.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(11)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/food/cheesburger.jpg" class="card-img-top" alt="cheesburger">
-      <div class="card-body">
-        <h5 class="card-title">Cheesburger</h5>
-        <p class="card-text">Voici notre Cheesburger du moment ! Cheddar, bacon, oignon, tomates.</p>
-        <p> 10.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(12)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/burger/triplecheese.png" class="card-img-top" alt="triplecheese">
-      <div class="card-body">
-        <h5 class="card-title">The Real Triple Cheesburger</h5>
-        <p class="card-text">Voici notre Triple Cheesburger du moment ! Cheddar, bacon, oignon, tomates.</p>
-        <p> 11.40€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(13)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/burger/burgercanadien.png" class="card-img-top" alt="burgercanadien">
-      <div class="card-body">
-        <h5 class="card-title">Burger Canadien</h5>
-        <p class="card-text">Voici notre burger Canadien du moment ! Cheddar, bacon, oignon, tomates.</p>
-        <p> 8.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(14)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/burger/blackburger.png" class="card-img-top" alt="blackburger">
-      <div class="card-body">
-        <h5 class="card-title">Black Burger</h5>
-        <p class="card-text">Voici notre Black Burger du moment ! Cheddar, bacon, oignon, tomates.</p>
-        <p> 10.99€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(15)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie burgers -->
-
-  <!-- Début de la partie pizzas -->
-  <hr>
-  <h1 class="pizza"> Nos Pizzas</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/calzone.png" class="card-img-top" alt="pizza-calzone">
-      <div class="card-body">
-        <h5 class="card-title">Pizza Calzone</h5>
-        <p class="card-text">Oeuf, olives, sauce tomates, dé de jambon, quoi de mieux pour bien se régaler ?</p>
-        <p> 7.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(16)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/chevremiel.png" class="card-img-top" alt="pizza-chevre-miel">
-      <div class="card-body">
-        <h5 class="card-title">Pizza Chèvre Miel</h5>
-        <p class="card-text">Gruyère, olives, chèvre, miel, quoi de mieux pour bien se régaler ?</p>
-        <p> 8.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(17)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/thon.png" class="card-img-top" alt="pizza-thon">
-      <div class="card-body">
-        <h5 class="card-title">Pizza au thon</h5>
-        <p class="card-text">Gruyère, olives, sauce tomates, thon, quoi de mieux pour bien se régaler ?</p>
-        <p> 6.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(18)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/3fromages.png" class="card-img-top" alt="pizza-3-formages">
-      <div class="card-body">
-        <h5 class="card-title">Pizza 3 fromages</h5>
-        <p class="card-text">Chèvre, brie, mimolette, tomates, quoi de mieux pour bien se régaler ? </p>
-        <p> 7.80€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(19)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/saumon.png" class="card-img-top" alt="pizza-saumon">
-      <div class="card-body">
-        <h5 class="card-title">Pizza Saumon</h5>
-        <p class="card-text">Saumon, persil, sauce tomates, quoi de mieux pour bien se régaler ? </p>
-        <p> 9.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(20)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie pizzas -->
-
-  <!-- Début de la partie désserts -->
-  <hr>
-  <h1 class="desserts">Nos Désserts</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/desserts/babaaurhum.png" class="card-img-top" alt="babaaurhum">
-      <div class="card-body">
-        <h5 class="card-title">Baba au Rhum</h5>
-        <p class="card-text">Voici notre wrap du moment ! poulet, bacon, oignon, tomates, crêpe.</p>
-        <p> 10.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(21)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/desserts/bananasplit.png" class="card-img-top" alt="bananasplit">
-      <div class="card-body">
-        <h5 class="card-title">Banana Split</h5>
-        <p class="card-text">Voici notre croque-monsieur du moment ! jambon, cheddar, pain</p>
-        <p> 10.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(22)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/desserts/tarteaufraise.png" class="card-img-top"
-        alt="tarte au fraise">
-      <div class="card-body">
-        <h5 class="card-title">Tarte au Fraises</h5>
-        <p class="card-text">Voici notre double cheesburger du moment ! fromages, double steak, oignon, tomates.</p>
-        <p> 5.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(23)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/desserts/tiramisu.png" class="card-img-top" alt="tiramisu">
-      <div class="card-body">
-        <h5 class="card-title">Tiramisu</h5>
-        <p class="card-text">Voici notre pizza au thon du moment ! thon, mozarella, oignon, tomates.</p>
-        <p> 8.45€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(24)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/desserts/tropezienne.png" class="card-img-top" alt="tropezienne">
-      <div class="card-body">
-        <h5 class="card-title">Tropezienne</h5>
-        <p class="card-text">Voici notre hamburger du moment ! cheddar, steak xl, oignon, tomates.</p>
-        <p> 6.00€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(25)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie désserts -->
-
-  <!-- Début de la partie cafés -->
-  <hr>
-  <h1 class="cafe"> Nos Cafés</h1>
-  <hr>
-  <div class="card-group">
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/café/café.png" class="card-img-top" alt="café">
-      <div class="card-body">
-        <h5 class="card-title">Café</h5>
-        <p class="card-text">Laissez-nous éveiller vos sens, une gorgée à la fois.</p>
-        <p> 2.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(26)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/café/cafeaulait.png" class="card-img-top" alt="caféaulait">
-      <div class="card-body">
-        <h5 class="card-title">Café au lait</h5>
-        <p class="card-text">Laissez-nous éveiller vos sens, une gorgée à la fois.</p>
-        <p> 2.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(27)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/café/cafelatte.png" class="card-img-top" alt="cafélatte">
-      <div class="card-body">
-        <h5 class="card-title">Café latte</h5>
-        <p class="card-text">Laissez-nous éveiller vos sens, une gorgée à la fois.</p>
-        <p> 2.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(28)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/café/cafecreme.png" class="card-img-top" alt="cafécreme">
-      <div class="card-body">
-        <h5 class="card-title">Café crème</h5>
-        <p class="card-text">Laissez-nous éveiller vos sens, une gorgée à la fois.</p>
-        <p> 2.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(29)">Ajoutez au panier</button>
-      </div>
-    </div>
-    <div class="card" style="width: 20rem;">
-      <img src="/img/images_the_district/catégorie/café/cafecourt.png" class="card-img-top" alt="cafécourt">
-      <div class="card-body">
-        <h5 class="card-title">Café court</h5>
-        <p class="card-text">Laissez-nous éveiller vos sens, une gorgée à la fois.</p>
-        <p> 2.50€</p>
-        <button class="btn btn-primary zoom" onclick="ajouterAuPanier(30)">Ajoutez au panier</button>
-      </div>
-    </div>
-  </div>
-  <!-- Fin de la partie cafés -->
-  <!-- Fin de la div contenant les aliments -->
-
-  <!-- Début du fonctionnement du panier -->
-  <script>
-    function ajouterAuPanier(idProduit) {
-      var produit = {
-        image: "",
-        nom: "",
-        description: "",
-        prix: 0
-      };
-
-    // Début de la partie cocktails
-      if (idProduit === 1) {
-        produit.image = "/img/images_the_district/catégorie/cocktail-manhattan.png"
-        produit.nom = "Le Manhattan";
-        produit.description = "";
-        produit.prix = 7.99;
-      } else if (idProduit === 2) {
-        produit.image = "/img/images_the_district/catégorie/LeBostonRumPunch.png"
-        produit.nom = "Le Boston Rum Punch";
-        produit.description = "";
-        produit.prix = 9.50;
-      } else if (idProduit === 3) {
-        produit.image = "/img/images_the_district/catégorie/london.png"
-        produit.nom = "Le London Fog";
-        produit.description = "";
-        produit.prix = 10.20;
-      } else if (idProduit === 4) {
-        produit.image = "/img/images_the_district/catégorie/milano.png"
-        produit.nom = "Le Milano";
-        produit.description = "";
-        produit.prix = 12.00;
-      } else if (idProduit === 5) {
-        produit.image = "/img/images_the_district/catégorie/bronx.png"
-        produit.nom = "Le Bronx";
-        produit.description = "";
-        produit.prix = 7.99;
-    // Fin de la partie cocktails
-
-    // Début de la partie salades
-      } else if (idProduit === 6) {
-        produit.image = "/img/images_the_district/catégorie/saladecesar.png"
-        produit.nom = "Salades César";
-        produit.description = "";
-        produit.prix = 11.00;
-      } else if (idProduit === 7) {
-        produit.image = "/img/images_the_district/catégorie/saladedepate.png"
-        produit.nom = "Salades de pâtes";
-        produit.description = "";
-        produit.prix = 9.99;
-      } else if (idProduit === 8) {
-        produit.image = "/img/images_the_district/catégorie/saladederiz.png"
-        produit.nom = "Salades de riz";
-        produit.description = "";
-        produit.prix = 10.45;
-      } else if (idProduit === 9) {
-        produit.image = "/img/images_the_district/catégorie/salademosaique.png"
-        produit.nom = "Salades Mosaique";
-        produit.description = "";
-        produit.prix = 12.60;
-      } else if (idProduit === 10) {
-        produit.image = "/img/images_the_district/catégorie/salademarocainne.png"
-        produit.nom = "Salades Marocaine";
-        produit.description = "";
-        produit.prix = 15.3;
-    // Fin de la partie salades
-
-    // Début de la parie burgers
-      } else if (idProduit === 11) {
-        produit.image = "/img/images_the_district/burger.jpg"
-        produit.nom = "Burger";
-        produit.description = "";
-        produit.prix = 9.00;
-      } else if (idProduit === 12) {
-        produit.image = "/img/images_the_district/food/cheesburger.jpg"
-        produit.nom = "Cheesburger";
-        produit.description = "";
-        produit.prix = 10.00;
-      } else if (idProduit === 13) {
-        produit.image = "/img/images_the_district/catégorie/burger/triplecheese.png"
-        produit.nom = "The Real Triple Cheesburger";
-        produit.description = "";
-        produit.prix = 11.40;
-      } else if (idProduit === 14) {
-        produit.image = "/img/images_the_district/catégorie/burger/burgercanadien.png"
-        produit.nom = "Burger Canadien";
-        produit.description = "";
-        produit.prix = 8.00;
-      } else if (idProduit === 15) {
-        produit.image = "/img/images_the_district/catégorie/burger/blackburger.png"
-        produit.nom = "Black Burger";
-        produit.description = "";
-        produit.prix = 10.99;
-    // Fin de la partie burgers
-
-    // Début de la partie pizzas
-      } else if (idProduit === 16) {
-        produit.image = "/img/images_the_district/catégorie/calzone.png"
-        produit.nom = "Pizza Calzone";
-        produit.description = "";
-        produit.prix = 7.00;
-      } else if (idProduit === 17) {
-        produit.image = "/img/images_the_district/catégorie/chevremiel.png"
-        produit.nom = "Pizza Chèvre Miel";
-        produit.description = "";
-        produit.prix = 8.50;
-      } else if (idProduit === 18) {
-        produit.image = "/img/images_the_district/catégorie/thon.png"
-        produit.nom = "Pizza au thon";
-        produit.description = "";
-        produit.prix = 6.50;
-      } else if (idProduit === 19) {
-        produit.image = "/img/images_the_district/catégorie/3fromages.png"
-        produit.nom = "Pizza 3 fromages";
-        produit.description = "";
-        produit.prix = 7.80;
-      } else if (idProduit === 20) {
-        produit.image = "/img/images_the_district/catégorie/saumon.png"
-        produit.nom = "Pizza Saumon";
-        produit.description = "";
-        produit.prix = 9.50;
-    // Fin de la partie pizzas
-
-    // Début de la partie désserts
-      } else if (idProduit === 21) {
-        produit.image = "/img/images_the_district/catégorie/desserts/babaaurhum.png"
-        produit.nom = "Baba au Rhum";
-        produit.description = "";
-        produit.prix = 10.00;
-      } else if (idProduit === 22) {
-        produit.image = " /img/images_the_district/catégorie/desserts/bananasplit.png"
-        produit.nom = "Banana Split";
-        produit.description = "";
-        produit.prix = 10.00;
-      } else if (idProduit === 23) {
-        produit.image = "/img/images_the_district/catégorie/desserts/tarteaufraise.png"
-        produit.nom = "Tarte au Fraises";
-        produit.description = "";
-        produit.prix = 5.50;
-      } else if (idProduit === 24) {
-        produit.image = "/img/images_the_district/catégorie/desserts/tiramisu.png"
-        produit.nom = "Tiramisu";
-        produit.description = "";
-        produit.prix = 8.45;
-      } else if (idProduit === 25) {
-        produit.image = "/img/images_the_district/catégorie/desserts/tropezienne.png"
-        produit.nom = "Tropezienne";
-        produit.description = "";
-        produit.prix = 6.00;
-    // Fin de la partie désserts
-
-    // Début de la partie cafés
-      } else if (idProduit === 26) {
-        produit.image = "/img/images_the_district/catégorie/café/cafelatte.png"
-        produit.nom = "Café";
-        produit.description = "";
-        produit.prix = 2.50;
-      } else if (idProduit === 27) {
-        produit.image = "/img/images_the_district/catégorie/café/cafeaulait.png"
-        produit.nom = "Café au lait";
-        produit.description = "";
-        produit.prix = 2.50;
-      } else if (idProduit === 28) {
-        produit.image = "/img/images_the_district/catégorie/café/cafelatte.png"
-        produit.nom = "Café latte";
-        produit.description = "";
-        produit.prix = 2.50;
-      } else if (idProduit === 29) {
-        produit.image = "/img/images_the_district/catégorie/café/cafecreme.png"
-        produit.nom = "Café crème";
-        produit.description = "";
-        produit.prix = 2.50;
-      } else if (idProduit === 30) {
-        produit.image = "/img/images_the_district/catégorie/café/cafecourt.png"
-        produit.nom = "Café court";
-        produit.description = "";
-        produit.prix = 2.50;
-      }
-    // Fin de la partie cafés 
-
-      var panier = JSON.parse(sessionStorage.getItem("panier")) || [];
-      panier.push(produit);
-      sessionStorage.setItem("panier", JSON.stringify(panier));
-
+        // Afficher les plats
+        echo '<div class="row">';
+        foreach ($plats as $plat) {
+            echo '<div class="col-md-4 mb-4">';
+            echo '<div class="card h-100">';
+            echo '<img src="' . $plat['image'] . '" class="card-img-top" alt="Image Plat">';
+            echo '<div class="card-body">';
+            echo '<h6 class="card-subtitle mb-2 text-muted">' . $categorie['libelle'] . '</h6>';
+            echo '<h5 class="card-title">' . $plat['libelle'] . '</h5>';
+            echo '<p class="card-text">' . $plat['description'] . '</p>';
+            echo '<p class="card-text">Prix : $' . $plat['prix'] . '</p>';
+            echo '<form action="panier.php" method="post">';
+            echo '<input type="hidden" name="id_plat" value="' . $plat['id'] . '">';
+            echo '<div class="form-group">';
+            echo '<label for="quantite' . $plat['id'] . '">Quantité :</label>';
+            echo '<input type="number" name="quantite" id="quantite' . $plat['id'] . '" class="form-control" min="0" value="0">';
+            echo '</div>';
+            echo '<button type="submit" class="btn btn-primary">Ajouter au panier</button>';                        
+            echo '</form>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        }
+        echo '</div>'; // Fin de la ligne
+        echo '</div>'; // Fin de la catégorie
     }
+    ?>
+</div>
 
-    function afficherPanier() {
-      window.location.href = "/commande.php";
-      console.log("je suis bien entré ici");
+<!-- Ajouter les scripts Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    }
-  </script>
-  <!-- Fin du fonctionnement du panier -->
 
+
+<br>
+<div class="bg-white">
+<br><br>
+<br>
+<div>
 </body>
+<footer>
+    <nav class="fondcouleurnav navbar navbar-expand-lg bg-beige justify-content-center text-center">
+
+        <!-- Début des réseaux sociaux -->
+        <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
+            <div class="couleur-navigation placers d-flex justify-content-center align-items-center flex-wrap">
+                <a class="taillelogors my-3 mt-3 mx-3"><i class="fa-brands fa-instagram fa-bounce"
+                        style="color: black;font-size:100px;"></i></a>
+                <a class="taillelogors my-5 mx-3"><i class="fa-brands fa-pinterest fa-bounce"
+                        style="color: black;font-size:100px;"></i></a>
+                <a class="taillelogors my-5 mx-3"><i class="fa-brands fa-twitter fa-bounce"
+                        style="color: black;font-size:100px;"></i></a>
+                <a class="taillelogors my-5 mx-3"><i class="fa-brands fa-linkedin fa-bounce"
+                        style="color: black;font-size:100px;"></i></a>
+                <a class="taillelogors my-5 mx-3"><i class="fa-brands fa-facebook fa-bounce"
+                        style="color: black;font-size:100px"></i></a>
+                <a class="taillelogors my-5 mx-3"><i class="fa-brands fa-youtube fa-bounce"
+                        style="color: black;font-size:100px"></i></a>
+            </div>
+        </div>
+        <!-- Fin des réseaux sociaux -->
+    </nav>
+</footer>
 </html>
