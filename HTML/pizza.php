@@ -19,19 +19,19 @@
         crossorigin="anonymous"></script>
     <!-- Début de la div de la nav bar du haut -->
     <nav class="fondcouleurnav navbar navbar-expand-lg bg-beige justify-content-center text-center">
-        <img class="logo" src="/img/images_the_district/the_district_brand/logo.png" alt="logo" style="height: 100px; width: 100px;">
-    
-        <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-            <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/index.html">Accueil</a>
-            <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/categorie.html">Catégorie</a>
-            <a class="navbar-brand mx-5 hover-scale" href="/HTML/plats.html">Plats</a>
-            <a class="navbar-brand mx-5 hover-scale" href="/HTML/contact.html">Contact</a>
-            <a class="navbar-brand mx-5 hover-scale" href="/HTML/commande.html">Commandes</a>
-        </div>
-        <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-            <a href="panier.html"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl"> </i></a>
-        </div>
-    </nav>
+    <img class="logo" src="/img/images_the_district/the_district_brand/logo.png" alt="logo" style="height: 100px; width: 100px;">
+
+    <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
+        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/index.php">Accueil</a>
+        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/categorie.php">Catégorie</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/plats.php">Plats</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/contact.php">Contact</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/commande.php">Commandes</a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
+        <a href="panier.php"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl zoom"> </i></a>
+    </div>
+</nav>
     <!-- Fin de la div de la nav bar du haut -->
 
     <!-- Début de la div contenant les aliments -->
@@ -83,7 +83,7 @@
 
     <!-- Début de la div du bouton directionnel vers la page catégorie -->
     <div class="bouton">
-        <a href="categorie.html" class="btn btn-primary zoom">Retour à la page catégorie</a>
+        <a href="categorie.php" class="btn btn-primary zoom">Retour à la page catégorie</a>
     </div>
     <!-- Fin de la div du bouton directionnel vers la page catégorie -->
 </body>

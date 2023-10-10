@@ -24,14 +24,14 @@
     <img class="logo" src="/img/images_the_district/the_district_brand/logo.png" alt="logo" style="height: 100px; width: 100px;">
 
     <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/index.html">Accueil</a>
-        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/categorie.html">Catégorie</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/plats.html">Plats</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/contact.html">Contact</a>
-        <a class="navbar-brand mx-5 hover-scale" href="/HTML/commande.html">Commandes</a>
+        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/index.php">Accueil</a>
+        <a class="navbar-brand mx-5 hover-scale" aria-current="page" href="/HTML/categorie.php">Catégorie</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/plats.php">Plats</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/contact.php">Contact</a>
+        <a class="navbar-brand mx-5 hover-scale" href="/HTML/commande.php">Commandes</a>
     </div>
     <div class="collapse navbar-collapse justify-content-center text-center" id="navbarNav">
-        <a href="panier.html"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl"> </i></a>
+        <a href="panier.php"><i class="fa-sharp fa-solid fa-basket-shopping fa-xl zoom"> </i></a>
     </div>
 </nav>
   <!-- Fin de la div de la nav bar du haut -->
@@ -62,7 +62,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos Cocktails</h5>
         <p class="card-text"></p>
-        <a href="aperitif.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="aperitif.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
 
@@ -71,7 +71,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos Salades</h5>
         <p class="card-text"></p>
-        <a href="salade.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="salade.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
 
@@ -80,7 +80,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos Burgers</h5>
         <p class="card-text"></p>
-        <a href="burgers.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="burgers.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
 
@@ -89,7 +89,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos Pizzas</h5>
         <p class="card-text"></p>
-        <a href="pizza.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="pizza.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
 
@@ -98,7 +98,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos desserts </h5>
         <p class="card-text"></p>
-        <a href="desserts.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="desserts.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
 
@@ -110,7 +110,7 @@
       <div class="card-body">
         <h5 class="card-title">Nos Cafés</h5>
         <p class="card-text"></p>
-        <a href="cafes.html" class="btn btn-primary zoom">Voir nos choix</a>
+        <a href="cafes.php" class="btn btn-primary zoom">Voir nos choix</a>
       </div>
     </div>
   </div>
