@@ -46,7 +46,7 @@ $mail->SMTPSecure = ''; // Aucune sécurité pour MailHog
 // ...
 
     // Destinataire de l'e-mail
-    $mail->setFrom('distrcitdistrict@gmail.com', 'Enzo');
+    $mail->setFrom('distrcitdistrict@gmail.com', 'Theo');
     $mail->addAddress($email, $nom); // Ajouter l'adresse du destinataire
     $mail->isHTML(true); // Activer le support HTML
 
@@ -65,7 +65,7 @@ $mail->SMTPSecure = ''; // Aucune sécurité pour MailHog
         }
     }
     $mail->Body .= 'Montant total de la commande : $' . $montant_total . '<br><br>';
-    $mail->Body .= 'Cordialement,<br>Enzo';
+    $mail->Body .= 'Cordialement,<br>Theo';
 
     // Envoyer l'e-mail
     $mail->send();
