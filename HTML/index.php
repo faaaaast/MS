@@ -24,8 +24,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
         require 'DAO.php';
-	$carouselContent = get_plats('localhost', 'district', 'admin', 'Afpa1234');
-	$carouselCategorie = get_categories('localhost', 'district', 'admin', 'Afpa1234');
+	$carouselContent = get_plats('localhost', 'theo', 'theo', '1234');
+	$carouselCategorie = get_categories('localhost', 'theo', 'theo', '1234');
     session_start();
     ?>
 
