@@ -24,3 +24,6 @@ WHERE id = 1;
 UPDATE utilisateurs
 SET adress = '15 rue de la gare'
 WHERE id = 3; 
+
+-- Supprimé la table 
+DROP TABLE utilisateurs;
