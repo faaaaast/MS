@@ -14,7 +14,7 @@ try {
 } catch (PDOException $e) {
     die("La connexion à la base de données a échoué : " . $e->getMessage());
 }
-require_once 'Panier.php';
+require_once 'panier.php';
 
 // Inclure la bibliothèque PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
@@ -35,16 +35,15 @@ $montant_total = isset($_SESSION['montant_total']) ? $_SESSION['montant_total'] 
 $mail = new PHPMailer(true);
 
 try {
-    // Paramètres SMTP pour Gmail
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->Port = 587;
-    $mail->SMTPAuth = true;
-    $mail->SMTPSecure = 'tls';
+// ...
+// Paramètres SMTP pour MailHog
+$mail->isSMTP();
+$mail->Host = 'localhost'; // L'hôte de MailHog (par défaut : localhost)
+$mail->Port = 1025; // Le port de MailHog (par défaut : 1025)
+$mail->SMTPAuth = false; // Pas besoin d'authentification pour MailHog
+$mail->SMTPSecure = ''; // Aucune sécurité pour MailHog
 
-    // Votre adresse Gmail et mot de passe
-    $mail->Username = 'distrcitdistrict@gmail.com';
-    $mail->Password = 'ggkp nkjm plmo kpwd';
+// ...
 
     // Destinataire de l'e-mail
     $mail->setFrom('distrcitdistrict@gmail.com', 'Enzo');

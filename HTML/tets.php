@@ -52,3 +52,4 @@ if ($mail){
         echo "L'envoi de mail a échoué. L'erreur suivante s'est produite : ", $mail->ErrorInfo;
         }
     }
+    ?>

@@ -103,25 +103,30 @@ li {
         echo '</thead>';
         echo '<tbody>';
 
-        $total_panier = 0;
+        // ...
 
-        foreach ($_SESSION['panier'] as $plat_id => $quantite) {
-            $plat = getDetailsPlat($db, $plat_id);
+$total_panier = 0.0; // Initialisation en tant que flottant
 
-            if ($plat) {
-                $total_plat = $quantite * $plat['prix'];
-                $total_panier += $total_plat;
+foreach ($_SESSION['panier'] as $plat_id => $quantite) {
+    $plat = getDetailsPlat($db, $plat_id);
 
-                echo '<tr>';
-                echo '<td><img src="' . $plat['image'] . '" alt="Image Plat" style="max-width: 100px;"></td>';
-                echo '<td>' . $plat['libelle'] . '</td>';
-                echo '<td>' . $plat['description'] . '</td>';
-                echo '<td>$' . $plat['prix'] . '</td>';
-                echo '<td>' . $quantite . '</td>';
-                echo '<td>$' . $total_plat . '</td>';
-                echo '</tr>';
-            }
-        }
+    if ($plat) {
+        $total_plat = $quantite * $plat['prix'];
+        $total_panier += $total_plat; // Maintenant, $total_panier est un flottant
+
+        echo '<tr>';
+        echo '<td><img src="' . $plat['image'] . '" alt="Image Plat" style="max-width: 100px;"></td>';
+        echo '<td>' . $plat['libelle'] . '</td>';
+        echo '<td>' . $plat['description'] . '</td>';
+        echo '<td>$' . $plat['prix'] . '</td>';
+        echo '<td>' . $quantite . '</td>';
+        echo '<td>$' . number_format($total_plat, 2) . '</td>'; // Utilisation de number_format pour afficher le total avec 2 décimales
+        echo '</tr>';
+    }
+}
+
+// ...
+
         $_SESSION['montant_total'] = $total_panier;
 
         echo '</tbody>';

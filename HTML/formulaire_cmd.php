@@ -15,7 +15,7 @@
 <body>
 
 <section class="cc-menu merriweather py-5 centered-form"> 
-    <form id="monFormulaire" action="traitement_commande.php" method="post">
+    <form id="monFormulaire" action="/HTML/traitement_cmd.php" method="post">
         <div class="col-12">
             <div class="form-group">
                 <label for="exampleFormControlInput1" class="form-label">Nom et Prenom :</label>
